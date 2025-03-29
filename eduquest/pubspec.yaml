@@ -59,6 +59,7 @@ flutter:
 
   assets:
     - assets/images/login.jpg
+    - assets/images/logo.png
     - assets/images/avatar.png
 
     - assets/images/avatars/manbir.png
@@ -66,9 +67,9 @@ flutter:
     - assets/images/avatars/krishna.png
     - assets/images/avatars/anish.png
 
-    - assets/images/grade1.jpg
+    - assets/images/grade1.png
     - assets/images/grade3.png
-    - assets/images/grade5.jpg
+    - assets/images/grade5.png
 
     - assets/images/biologylesson.png
     - assets/images/animals.png

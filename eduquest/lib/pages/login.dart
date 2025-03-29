@@ -22,20 +22,22 @@ class SignUpPage extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Header with icon
                   Image.asset("assets/images/login.jpg", height: 250),
                   const SizedBox(height: 10),
                   Text(
-                    "Student Sign Up",
+                    "Welcome to EduQuest!",
                     style: TextStyle(
                       fontSize: 32,
                       fontFamily: "NotoSans",
                       fontWeight: FontWeight.bold,
                       color: Colors.blue.shade900,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 18),
 
                   // Form container
                   Container(

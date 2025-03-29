@@ -27,7 +27,7 @@ class _ClassSelectorState extends State<ClassSelector> {
             _buildClassOption(
               context,
               title: 'Grade 1-2',
-              imagePath: 'assets/images/grade1.jpg',
+              imagePath: 'assets/images/grade1.png',
             ),
             SizedBox(height: 16),
             _buildClassOption(
@@ -39,7 +39,7 @@ class _ClassSelectorState extends State<ClassSelector> {
             _buildClassOption(
               context,
               title: 'Grade 5-6',
-              imagePath: 'assets/images/grade5.jpg',
+              imagePath: 'assets/images/grade5.png',
             ),
           ],
         ),
