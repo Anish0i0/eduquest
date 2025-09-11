@@ -1,4 +1,4 @@
-import 'package:eduquest/pages/login.dart';
+import 'package:eduquest/pages/signup_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
