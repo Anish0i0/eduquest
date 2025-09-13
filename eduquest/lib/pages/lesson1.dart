@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:installed_apps/index.dart';
+import 'package:eduquest/pages/chatbot_page.dart';
 
 class BiologyLesson extends StatefulWidget {
   const BiologyLesson({super.key});
@@ -193,7 +194,13 @@ class _BiologyLessonState extends State<BiologyLesson> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Expanded(child: _buildOutlinedButton("Ask Doubt", () {})),
+        Expanded(
+          child: _buildOutlinedButton("Ask Doubt", () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChatBotPage()),
+            );
+          })),
         const SizedBox(width: 16),
         Expanded(child: _buildOutlinedButton("Quiz", () {})),
       ],

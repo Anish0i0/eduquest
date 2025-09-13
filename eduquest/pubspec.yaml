@@ -38,6 +38,7 @@ dependencies:
   percent_indicator: ^4.2.4
   installed_apps: ^1.6.0
   flutter_tts: ^4.2.2
+  http: ^0.13.0
 
 dev_dependencies:
   flutter_test:
