@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ChatBotPage extends StatefulWidget {
   const ChatBotPage({super.key});
@@ -12,22 +14,10 @@ class _ChatBotPageState extends State<ChatBotPage> {
   final List<Map<String, String>> _messages = [];
   final ScrollController _scrollController = ScrollController();
 
-  // Enhanced knowledge base (Q&A about human body)
-  final Map<String, String> _knowledgeBase = {
-    "what is the largest organ": "The skin is the largest organ in the human body.",
-    "how many bones": "An adult human body has 206 bones.",
-    "body temperature": "The average normal body temperature is about 98.6°F (37°C).",
-    "strongest muscle": "The masseter (jaw muscle) is the strongest muscle in the human body.",
-    "how many teeth": "Adults usually have 32 teeth, including wisdom teeth.",
-    "heart function": "The heart pumps blood throughout the body, delivering oxygen and nutrients.",
-    "respiratory system": "The respiratory system includes the lungs and airways, helping us breathe.",
-    "nervous system": "The nervous system controls both voluntary and involuntary actions.",
-    "digestive system": "The digestive system breaks down food and absorbs nutrients.",
-    "skeletal system": "The skeletal system provides structure and protects internal organs.",
-    "hello": "Hello! I'm here to help you learn about the human body. What would you like to know?",
-    "hi": "Hi there! Ask me anything about the human body.",
-    "help": "I can answer questions about human anatomy, organs, systems, and more. Try asking about bones, muscles, or organs!",
-  };
+  // OpenRouter API setup
+  final String _apiUrl = "https://openrouter.ai/api/v1/chat/completions";
+  final String _apiKey = "Your_API_Key"; // 🔑 Replace with your key
+  final String _model = "deepseek/deepseek-r1-0528:free";
 
   void _sendMessage() {
     String userMsg = _controller.text.trim();
@@ -48,42 +38,61 @@ class _ChatBotPageState extends State<ChatBotPage> {
       );
     });
 
-    // Find the best matching response
-    String reply = "I'm not sure about that yet. Try asking about human anatomy, organs, or body systems!";
-    String lowerMsg = userMsg.toLowerCase();
+    _getBotResponse(userMsg);
+  }
 
-    // Check for exact matches first
-    bool foundMatch = false;
-    _knowledgeBase.forEach((key, value) {
-      if (lowerMsg.contains(key)) {
-        reply = value;
-        foundMatch = true;
-      }
+  Future<void> _getBotResponse(String query) async {
+    // Add typing indicator
+    setState(() {
+      _messages.add({"role": "bot", "text": "..."});
     });
 
-    // If no match found, provide a generic response
-    if (!foundMatch) {
-      if (lowerMsg.contains("thank you")) {
-        reply = "You're welcome! Is there anything else you'd like to know about the human body?";
-      } else if (lowerMsg.contains("how are you")) {
-        reply = "I'm doing great! Ready to help you learn about the amazing human body.";
-      }
-    }
+    try {
+      final response = await http.post(
+        Uri.parse(_apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $_apiKey",
+          "HTTP-Referer": "<YOUR_SITE_URL>", // optional
+          "X-Title": "<YOUR_SITE_NAME>", // optional
+        },
+        body: json.encode({
+          "model": _model,
+          "messages": [
+            {"role": "system", "content": "You are an educational assistant. Always reply in clear, simple English, and always answer in short."},
+            {"role": "user", "content": query}
+         ],
+        }),
+      );
 
-    // Simulate typing delay
-    Future.delayed(const Duration(milliseconds: 800), () {
+      String reply;
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        reply = data["choices"][0]["message"]["content"] ??
+            "Sorry, I couldn't understand that.";
+      } else {
+        reply = "Error: ${response.statusCode} ${response.reasonPhrase}";
+      }
+
+      // Replace typing indicator with reply
       setState(() {
+        _messages.removeLast();
         _messages.add({"role": "bot", "text": reply});
       });
-      
-      // Scroll to bottom after bot replies
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
+    } catch (e) {
+      setState(() {
+        _messages.removeLast();
+        _messages.add({"role": "bot", "text": "Network error. Please try again."});
       });
+    }
+
+    // Scroll after reply
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     });
   }
 
